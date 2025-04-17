@@ -1,4 +1,3 @@
-
 import { useState, useRef, ChangeEvent, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -49,14 +48,14 @@ export function MemoryForm() {
     e.preventDefault();
     
     if (!title || !description) {
-      toast.error("Please fill in all required fields");
+      toast.error("Бүх шаардлагатай талбаруудыг бөглөнө үү");
       return;
     }
 
-    // Create a new memory object
+    // Шинэ дурсамжийн объект үүсгэх
     const newMemory = {
       id: Date.now().toString(),
-      userId: user?.id || "unknown", // Associate memory with user
+      userId: user?.id || "unknown", // Дурсамжийг хэрэглэгчтэй холбох
       title,
       description,
       location,
@@ -66,16 +65,16 @@ export function MemoryForm() {
       comments: []
     };
 
-    // Get existing memories or initialize
+    // Оршин буй дурсамжуудыг авах эсвэл шинэчлэх
     const existingMemories = JSON.parse(localStorage.getItem("myMemories") || "[]");
     
-    // Add new memory to the array
+    // Шинэ дурсамжийг массивд нэмж оруулах
     const updatedMemories = [newMemory, ...existingMemories];
     
-    // Save back to localStorage
+    // Дурсамжийг localStorage-д хадгалах
     localStorage.setItem("myMemories", JSON.stringify(updatedMemories));
     
-    toast.success("Memory created successfully!");
+    toast.success("Дурсамж амжилттай үүсгэгдлээ!");
     navigate("/my-memories");
   };
 
@@ -83,7 +82,7 @@ export function MemoryForm() {
     <form onSubmit={handleSubmit} className="space-y-6 bg-white rounded-2xl shadow-md border border-purple-100 p-6 md:p-8">
       <div className="space-y-2">
         <Label htmlFor="title" className="text-purple-800">
-          Title <span className="text-pink-500">*</span>
+          Гарчиг <span className="text-pink-500">*</span>
         </Label>
         <div className="relative">
           <PenLine className="absolute left-3 top-3 h-4 w-4 text-purple-500" />
@@ -91,7 +90,7 @@ export function MemoryForm() {
             id="title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="Give your memory a title"
+            placeholder="Дурсамжийн гарчиг оруулна уу"
             className="pl-10"
             required
           />
@@ -100,13 +99,13 @@ export function MemoryForm() {
 
       <div className="space-y-2">
         <Label htmlFor="description" className="text-purple-800">
-          Description <span className="text-pink-500">*</span>
+          Тайлбар <span className="text-pink-500">*</span>
         </Label>
         <Textarea
           id="description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          placeholder="Tell the story behind this memory..."
+          placeholder="Дурсамжийн ард байгаа түүхийг бичнэ үү..."
           className="min-h-[120px]"
           required
         />
@@ -114,16 +113,16 @@ export function MemoryForm() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="location" className="text-purple-800">Location</Label>
+          <Label htmlFor="location" className="text-purple-800">Байршил</Label>
           <Input
             id="location"
             value={location}
             onChange={(e) => setLocation(e.target.value)}
-            placeholder="Where did this happen?"
+            placeholder="Энэ юу болсон вэ?"
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="date" className="text-purple-800">Date</Label>
+          <Label htmlFor="date" className="text-purple-800">Огноо</Label>
           <Input
             id="date"
             type="date"
@@ -134,7 +133,7 @@ export function MemoryForm() {
       </div>
 
       <div className="space-y-2">
-        <Label className="text-purple-800">Add Photo</Label>
+        <Label className="text-purple-800">Зураг нэмэх</Label>
         
         {imagePreview ? (
           <div className="relative">
@@ -159,8 +158,8 @@ export function MemoryForm() {
             className="border-2 border-dashed border-purple-200 rounded-lg p-6 text-center cursor-pointer hover:bg-purple-50 transition-colors"
           >
             <Camera className="mx-auto h-8 w-8 text-purple-400 mb-2" />
-            <p className="text-purple-600 mb-1">Drag photo here or click to upload</p>
-            <p className="text-xs text-purple-400">JPG, PNG, or GIF up to 5MB</p>
+            <p className="text-purple-600 mb-1">Зураг оруулна уу эсвэл дарж оруулна уу</p>
+            <p className="text-xs text-purple-400">JPG, PNG, эсвэл GIF 5MB хүртэл</p>
           </div>
         )}
         
@@ -178,7 +177,7 @@ export function MemoryForm() {
         className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
       >
         <PlusCircle className="mr-2 h-4 w-4" />
-        Create Memory
+        Дурсамж үүсгэх
       </Button>
     </form>
   );

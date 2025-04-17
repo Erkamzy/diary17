@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
 import { Plus, LogIn, LogOut, User } from "lucide-react";
@@ -10,7 +9,7 @@ export function Navbar() {
 
   const handleLogout = () => {
     logout();
-    toast.success("Logged out successfully");
+    toast.success("Амжилттай гарав");
   };
 
   return (
@@ -24,14 +23,14 @@ export function Navbar() {
         
         <nav className="hidden md:flex items-center gap-6 font-quicksand">
           <Link to="/" className="text-purple-800 hover:text-purple-600 transition-colors">
-            Home
+            Нүүр хуудас
           </Link>
           <Link to="/explore" className="text-purple-800 hover:text-purple-600 transition-colors">
-            Explore
+            Хайх
           </Link>
           {isAuthenticated && (
             <Link to="/my-memories" className="text-purple-800 hover:text-purple-600 transition-colors">
-              My Memories
+              Миний Дурсамжууд
             </Link>
           )}
         </nav>
@@ -42,7 +41,7 @@ export function Navbar() {
               <Link to="/create">
                 <Button className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-full">
                   <Plus className="mr-2 h-4 w-4" />
-                  <span className="font-quicksand">New Memory</span>
+                  <span className="font-quicksand">Шинэ Дурсамж</span>
                 </Button>
               </Link>
               <div className="flex items-center gap-2">
@@ -59,13 +58,13 @@ export function Navbar() {
               <Link to="/login">
                 <Button variant="outline" className="font-quicksand">
                   <LogIn className="mr-2 h-4 w-4" />
-                  Login
+                  Нэвтрэх
                 </Button>
               </Link>
               <Link to="/signup">
                 <Button className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-full font-quicksand">
                   <User className="mr-2 h-4 w-4" />
-                  Sign Up
+                  Бүртгүүлэх
                 </Button>
               </Link>
             </>

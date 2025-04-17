@@ -17,9 +17,9 @@ export default function CreateMemory() {
           </Link>
           
           <div className="bg-white rounded-2xl shadow-md border border-purple-100 p-6 md:p-8">
-            <h1 className="font-playfair text-3xl font-bold mb-6 text-purple-900">Create a New Memory</h1>
+            <h1 className="font-playfair text-3xl font-bold mb-6 text-purple-900">Шинэ Дурсамж Үүсгэх</h1>
             <p className="text-purple-700 mb-8 font-quicksand">
-              Share your special moment to preserve it forever in your memory garden.
+            Таны тусгай мөчийг хуваалцаж, үүнийг таны дурсамжийн цэцэрлэгт мөнхлөх.
             </p>
             
             <MemoryForm />

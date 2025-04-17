@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -16,26 +15,19 @@ export default function Signup() {
   const handleSignup = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Get existing users or initialize empty array
     const existingUsers = JSON.parse(localStorage.getItem("users") || "[]");
     
-    // Check if user already exists
     if (existingUsers.some((user: any) => user.email === email)) {
-      toast.error("User with this email already exists");
+      toast.error("Энэ и-мэйл хаягтай хэрэглэгч бүртгэгдсэн байна");
       return;
     }
     
-    // Create new user
     const newUser = { id: Date.now().toString(), name, email, password };
-    
-    // Add to users array
     const updatedUsers = [...existingUsers, newUser];
     localStorage.setItem("users", JSON.stringify(updatedUsers));
-    
-    // Set as current user
     localStorage.setItem("currentUser", JSON.stringify(newUser));
     
-    toast.success("Account created successfully!");
+    toast.success("Бүртгэл амжилттай үүслээ!");
     navigate("/my-memories");
   };
 
@@ -46,18 +38,18 @@ export default function Signup() {
           <h1 className="text-3xl font-playfair font-bold bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent">
             Memory Garden
           </h1>
-          <p className="text-purple-600 mt-2">Create a new account</p>
+          <p className="text-purple-600 mt-2">Шинэ бүртгэл үүсгэх</p>
         </div>
         
         <form onSubmit={handleSignup} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name">Full Name</Label>
+            <Label htmlFor="name">Бүтэн нэр</Label>
             <div className="relative">
               <User className="absolute left-3 top-3 h-4 w-4 text-purple-500" />
               <Input
                 id="name"
                 type="text"
-                placeholder="John Doe"
+                placeholder="Жон До"
                 className="pl-10"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -67,7 +59,7 @@ export default function Signup() {
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">И-мэйл</Label>
             <div className="relative">
               <Mail className="absolute left-3 top-3 h-4 w-4 text-purple-500" />
               <Input
@@ -83,7 +75,7 @@ export default function Signup() {
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">Нууц үг</Label>
             <div className="relative">
               <Lock className="absolute left-3 top-3 h-4 w-4 text-purple-500" />
               <Input
@@ -100,15 +92,15 @@ export default function Signup() {
           
           <Button type="submit" className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600">
             <UserPlus className="mr-2 h-4 w-4" />
-            Sign Up
+            Бүртгүүлэх
           </Button>
         </form>
         
         <div className="mt-6 text-center">
           <p className="text-purple-700">
-            Already have an account?{" "}
+            Өмнө нь бүртгүүлсэн үү?{" "}
             <Link to="/login" className="font-medium text-purple-600 hover:underline">
-              Sign in
+              Нэвтрэх
             </Link>
           </p>
         </div>
@@ -116,7 +108,7 @@ export default function Signup() {
       
       <div className="mt-4 text-center">
         <Link to="/" className="text-purple-600 hover:underline">
-          Return to Home
+          Нүүр хуудас руу буцах
         </Link>
       </div>
     </div>

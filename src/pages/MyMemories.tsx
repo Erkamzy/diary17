@@ -1,4 +1,3 @@
-
 import { Navbar } from "@/components/Navbar";
 import { MemoryCard, MemoryProps } from "@/components/MemoryCard";
 import { Button } from "@/components/ui/button";
@@ -9,22 +8,22 @@ import { useAuth } from "@/contexts/AuthContext";
 
 export default function MyMemories() {
   const [memories, setMemories] = useState<MemoryProps[]>([]);
-  const { user } = useAuth();
-  
+  const { user } = useAuth(); // `user`-ийг context-с авах
+
   useEffect(() => {
-    // Load memories from localStorage
+    if (!user) {
+      console.log("User is not logged in");
+      return;
+    }
+  
     const savedMemories = localStorage.getItem('myMemories');
     if (savedMemories) {
       const parsedMemories = JSON.parse(savedMemories);
-      // Filter memories to only show the current user's memories
-      if (user) {
-        const userMemories = parsedMemories.filter((memory: MemoryProps) => 
-          memory.userId === user.id
-        );
-        setMemories(userMemories);
-      }
+      const userMemories = parsedMemories.filter((memory: MemoryProps) => memory.userId === user.id);
+      setMemories(userMemories);
     }
   }, [user]);
+  
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 to-pink-50">
@@ -41,7 +40,7 @@ export default function MyMemories() {
               </Button>
             </Link>
           </div>
-          
+
           {memories.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {memories.map((memory) => (

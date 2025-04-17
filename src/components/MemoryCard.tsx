@@ -16,6 +16,7 @@ export interface MemoryProps {
   };
   likes: number;
   comments: number;
+  userId?: string;
 }
 
 export function MemoryCard({ memory }: { memory: MemoryProps }) {

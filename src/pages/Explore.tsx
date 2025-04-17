@@ -118,6 +118,7 @@ export default function Explore() {
   const [searchQuery, setSearchQuery] = useState("");
   const [displayedMemories, setDisplayedMemories] = useState(ALL_MEMORIES);
 
+  // Хайлтын функцийг гүйцэтгэх
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const filtered = ALL_MEMORIES.filter(
@@ -132,18 +133,20 @@ export default function Explore() {
       <Navbar />
       
       <main className="container mx-auto px-4 py-8">
+        {/* Хуудасны гарчиг ба хайлт */}
         <div className="text-center max-w-3xl mx-auto mb-10">
-          <h1 className="font-playfair text-4xl font-bold mb-4 text-purple-900">Explore Memories</h1>
+          <h1 className="font-playfair text-4xl font-bold mb-4 text-purple-900">Дурсамжаа хайх</h1>
           <p className="text-purple-700 font-quicksand">
-            Discover beautiful moments shared by our community
+            Манай олон нийтийн хуваалцсан гайхалтай мөчүүдийг олж мэдээрэй
           </p>
           
+          {/* Хайлт хийх форм */}
           <form onSubmit={handleSearch} className="flex gap-2 mt-6 max-w-lg mx-auto">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-400 h-4 w-4" />
               <Input
                 type="text"
-                placeholder="Search memories..."
+                placeholder="Дурсамжаа хайх..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10 rounded-full border-purple-200"
@@ -153,27 +156,30 @@ export default function Explore() {
               type="submit" 
               className="rounded-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
             >
-              Search
+              Хайх
             </Button>
           </form>
         </div>
         
+        {/* Хайлтын үр дүнгийн сүлжээ */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {displayedMemories.map((memory) => (
             <MemoryCard key={memory.id} memory={memory} />
           ))}
         </div>
         
+        {/* Хайлтын үр дүн байхгүй үед харуулах */}
         {displayedMemories.length === 0 && (
           <div className="text-center py-16">
-            <h3 className="text-xl font-medium text-purple-800 mb-2">No memories found</h3>
-            <p className="text-purple-600">Try a different search term</p>
+            <h3 className="text-xl font-medium text-purple-800 mb-2">Дурсамж олдсонгүй</h3>
+            <p className="text-purple-600">Өөр хайлтын үг оруулаад үзээрэй</p>
           </div>
         )}
         
+        {/* Цааш харах товч */}
         <div className="text-center mt-12">
           <Button variant="outline" className="border-purple-300 text-purple-700">
-            Load More
+            Цааш үзэх
           </Button>
         </div>
       </main>
