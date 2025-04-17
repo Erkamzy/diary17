@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import Explore from "./pages/Explore";
 import CreateMemory from "./pages/CreateMemory";
 import AddMemory from "./pages/AddMemory";
+import MyMemories from "./pages/MyMemories";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -23,6 +24,7 @@ const App = () => (
           <Route path="/explore" element={<Explore />} />
           <Route path="/create" element={<CreateMemory />} />
           <Route path="/add-memory" element={<AddMemory />} />
+          <Route path="/my-memories" element={<MyMemories />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

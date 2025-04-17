@@ -20,6 +20,9 @@ export function Navbar() {
           <Link to="/explore" className="text-purple-800 hover:text-purple-600 transition-colors">
             Explore
           </Link>
+          <Link to="/my-memories" className="text-purple-800 hover:text-purple-600 transition-colors">
+            My Memories
+          </Link>
           <Link to="/add-memory" className="text-purple-800 hover:text-purple-600 transition-colors">
             Add Memory
           </Link>
