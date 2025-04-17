@@ -5,17 +5,26 @@ import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function MyMemories() {
   const [memories, setMemories] = useState<MemoryProps[]>([]);
+  const { user } = useAuth();
   
   useEffect(() => {
     // Load memories from localStorage
     const savedMemories = localStorage.getItem('myMemories');
     if (savedMemories) {
-      setMemories(JSON.parse(savedMemories));
+      const parsedMemories = JSON.parse(savedMemories);
+      // Filter memories to only show the current user's memories
+      if (user) {
+        const userMemories = parsedMemories.filter((memory: MemoryProps) => 
+          memory.userId === user.id
+        );
+        setMemories(userMemories);
+      }
     }
-  }, []);
+  }, [user]);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 to-pink-50">
