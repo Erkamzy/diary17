@@ -5,6 +5,13 @@ import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { Image, Upload } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+
+// Get current date in the format "Month Day, Year"
+const getCurrentDate = () => {
+  const date = new Date();
+  return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+};
 
 export function MemoryForm() {
   const navigate = useNavigate();
@@ -33,12 +40,36 @@ export function MemoryForm() {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate saving to a database
+    // Create new memory object
+    const newMemory = {
+      id: Date.now().toString(),
+      title,
+      description,
+      imageUrl,
+      date: getCurrentDate(),
+      author: {
+        name: "You",
+        avatar: "https://randomuser.me/api/portraits/women/44.jpg"
+      },
+      likes: 0,
+      comments: 0
+    };
+    
+    // In a real app, this would be an API call
     setTimeout(() => {
-      console.log({ title, description, imageUrl });
+      // Get existing memories from localStorage or initialize empty array
+      const existingMemories = JSON.parse(localStorage.getItem('myMemories') || '[]');
+      
+      // Add new memory to the beginning of the array
+      const updatedMemories = [newMemory, ...existingMemories];
+      
+      // Save back to localStorage
+      localStorage.setItem('myMemories', JSON.stringify(updatedMemories));
+      
       setIsSubmitting(false);
-      navigate("/");
-    }, 1500);
+      toast.success("Memory added successfully!");
+      navigate("/my-memories");
+    }, 1000);
   };
 
   return (
