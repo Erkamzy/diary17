@@ -20,8 +20,8 @@ export function Navbar() {
           <Link to="/explore" className="text-purple-800 hover:text-purple-600 transition-colors">
             Explore
           </Link>
-          <Link to="/about" className="text-purple-800 hover:text-purple-600 transition-colors">
-            About
+          <Link to="/add-memory" className="text-purple-800 hover:text-purple-600 transition-colors">
+            Add Memory
           </Link>
         </nav>
         
