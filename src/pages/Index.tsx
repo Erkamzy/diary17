@@ -8,13 +8,13 @@ import { Link } from "react-router-dom";
 const MEMORIES: MemoryProps[] = [
   {
     id: "1",
-    title: "Далайн эргийн нар жаргал",
-    description: "Малибу далайн эрэг дээр нар жаргаж байхад тэнгэр улбар, ягаан, ягаавтар хөх өнгөөр будаж, үзэсгэлэнтэй байсан. Бид одод гийтэл тэнд байсан.",
-    imageUrl: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1000&auto=format&fit=crop",
+    title: "Далайн эрЭг",
+    description: "далайн эрэг дээр нар жаргаж байна",
+    imageUrl: "https://i.pinimg.com/474x/23/b6/6a/23b66aead36280c93df41dbbf142b579.jpg",
     date: "2025 оны 4-р сарын 12",
     author: {
-      name: "Эмма Жонсон",
-      avatar: "https://randomuser.me/api/portraits/women/44.jpg"
+      name: "user 1",
+      avatar: "https://i.pinimg.com/736x/da/08/4c/da084c7039b468dfa1afb6f62eb6ebe3.jpg"
     },
     likes: 24,
     comments: 5
@@ -22,12 +22,12 @@ const MEMORIES: MemoryProps[] = [
   {
     id: "2",
     title: "Хаврын эхний өдөр",
-    description: "Ботаникийн цэцэрлэг дэх сакура модны цэцэглэл. Хаврыг угтах хамгийн төгс арга — найзуудтайгаа инээд хөөр дүүрэн өдөр.",
-    imageUrl: "https://images.unsplash.com/photo-1522748906645-95d8adfd52c7?q=80&w=987&auto=format&fit=crop",
+    description: "Хаврын инээд хөөр дүүрэн өдөр.",
+    imageUrl: "https://i.pinimg.com/474x/23/b6/6a/23b66aead36280c93df41dbbf142b579.jpg",
     date: "2025 оны 4-р сарын 15",
     author: {
-      name: "Алекс Чен",
-      avatar: "https://randomuser.me/api/portraits/men/22.jpg"
+      name: "user 2",
+      avatar: "https://i.pinimg.com/736x/da/08/4c/da084c7039b468dfa1afb6f62eb6ebe3.jpg"
     },
     likes: 42,
     comments: 8
@@ -35,12 +35,12 @@ const MEMORIES: MemoryProps[] = [
   {
     id: "3",
     title: "Гэр бүлийн зугаалга",
-    description: "Ээжийн төрсөн өдрийг гэнэтийн зугаалгаар тэмдэглэсэн. Цаг агаар гайхалтай байсан ба бүх хүн маш их хөгжилдсөн.",
-    imageUrl: "https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?q=80&w=869&auto=format&fit=crop",
+    description: "",
+    imageUrl: "https://i.pinimg.com/474x/23/b6/6a/23b66aead36280c93df41dbbf142b579.jpg",
     date: "2025 оны 4-р сарын 5",
     author: {
-      name: "София Уильямс",
-      avatar: "https://randomuser.me/api/portraits/women/63.jpg"
+      name: "user3",
+      avatar: "https://i.pinimg.com/736x/da/08/4c/da084c7039b468dfa1afb6f62eb6ebe3.jpg"
     },
     likes: 37,
     comments: 12
@@ -48,12 +48,12 @@ const MEMORIES: MemoryProps[] = [
   {
     id: "4",
     title: "Ууланд авирсан адал явдал",
-    description: "Сар гаруйн бэлтгэл хийсний эцэст Rainier уулын оргилд гарсан! Оргил дээрх үзэмж нь бүх ядралтыг үнэхээр орлохоор байлаа.",
-    imageUrl: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=870&auto=format&fit=crop",
+    description: "Сар гаруйн бэлтгэл хийсний эцэст Rainier уулын оргилд гарсан! ",
+    imageUrl: "https://i.pinimg.com/474x/23/b6/6a/23b66aead36280c93df41dbbf142b579.jpg",
     date: "2025 оны 4-р сарын 2",
     author: {
-      name: "Жэймс Уилсон",
-      avatar: "https://randomuser.me/api/portraits/men/42.jpg"
+      name: "user4",
+      avatar: "https://i.pinimg.com/736x/da/08/4c/da084c7039b468dfa1afb6f62eb6ebe3.jpg"
     },
     likes: 56,
     comments: 14
@@ -62,13 +62,13 @@ const MEMORIES: MemoryProps[] = [
 
 const FEATURED_MEMORY = {
   id: "featured-1",
-  title: "Манай хуримын өдөр",
-  description: "Амьдралынхаа хамгийн ид шидтэй өдөр. Гэр бүл, найз нөхдийнхөө хүрээлэлд бид цэцгийн доорх гэрлэн чимэгтэй орчинд ам тангараг өргөсөн. Бүх агшин төгс байсан — ёслолоос эхлээд оддын доор бүжиглэх хүртэл. Би энэ дурсамжийг үүрд нандигнана.",
-  imageUrl: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=870&auto=format&fit=crop",
-  date: "2025 оны 4-р сарын 8",
+  title: "Хуримын өдөр",
+  description: "Амьдралын минь хамгийн чцхал өдөр.",
+  imageUrl: " https://imgix.bustle.com/uploads/image/2023/3/23/26351fe6-c505-48f2-affb-fcf11abc22ed-d362-belle-disney.jpg?w=1200&h=630&fit=crop&crop=focalpoint&fm=jpg&fp-x=0.5147&fp-y=0.442",
+  date: "2025 оны 3-р сарын 24",
   author: {
-    name: "Жессика Мартинез",
-    avatar: "https://randomuser.me/api/portraits/women/16.jpg"
+    name: "zykk",
+    avatar: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=870&auto=format&fit=crop"
   },
   likes: 124,
   comments: 27
@@ -86,7 +86,7 @@ export default function Index() {
             Үнэт дурсамжаа хадгал
           </h1>
           <p className="text-purple-700 text-lg md:text-xl font-quicksand mb-8 max-w-2xl mx-auto">
-            Хувийн дурсамжийн цэцэрлэгээ бий болго. Онцгой мөчүүдээ хайртай хүмүүстэйгээ хуваалцаж, мөнхөд хадгалаарай.
+            Хувийн дурсамжийн цэцэрлэгээ бий болго. Онцгой мөчүүдээ хайртай хүмүүстэйгээ хуваалцаарай.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <Link to="/create">
@@ -145,13 +145,14 @@ export default function Index() {
                 </div>
               </div>
               
-              <div className="order-1 md:order-2 h-64 md:h-auto">
+              <div className="order-1 md:order-2 w-[100%] h-[100%]">
                 <img 
                   src={FEATURED_MEMORY.imageUrl} 
                   alt={FEATURED_MEMORY.title}
-                  className="w-full h-full object-cover" 
+                  className="w-full h-full object-cover rounded-lg" 
                 />
               </div>
+
             </div>
           </div>
         </section>
@@ -171,13 +172,6 @@ export default function Index() {
             ))}
           </div>
           
-          <div className="text-center mt-10">
-            <Link to="/explore">
-              <Button variant="outline" className="border-purple-300 text-purple-700">
-                Илүү олон тэмдэглэл үзэх
-              </Button>
-            </Link>
-          </div>
         </section>
       </main>
       
