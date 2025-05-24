@@ -1,47 +1,57 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/sonner";
 import { LogIn, Mail, Lock } from "lucide-react";
-import { Link } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
-import { Navbar } from "@/components/Navbar";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  // Хэрвээ хэрэглэгч аль хэдийн нэвтэрсэн бол, тэрээр login хуудсанд орж болохгүй
   useEffect(() => {
     const currentUser = localStorage.getItem("currentUser");
     if (currentUser) {
-      navigate("/"); // Хэрэглэгч аль хэдийн нэвтэрсэн бол profile хуудсанд шилжих
+      navigate("/");
     }
   }, [navigate]);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Шалгах: Имэйл болон нууц үг хоёулаа орсон эсэх
     if (!email || !password) {
       toast.error("Имэйл болон нууц үгээ оролгүй нэвтрэх боломжгүй");
       return;
     }
 
-    const users = JSON.parse(localStorage.getItem("users") || "[]");
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          action: "login",
+          email,
+          password,
+        }),
+      });
 
-    // Хэрэглэгчийг олох
-    const user = users.find((u: any) => u.email === email && u.password === password);
+      const result = await response.json();
 
-    if (user) {
-      localStorage.setItem("currentUser", JSON.stringify(user));
-      toast.success("Амжилттай нэвтэрлээ!");
-      navigate("/"); // Амжилттай нэвтэрсэн бол profile хуудсанд шилжих
-    } else {
-      toast.error("Имэйл эсвэл нууц үг буруу байна");
+      if (result.resultCode === 200) {
+        const user = result.data[0];
+        localStorage.setItem("currentUser", JSON.stringify(user));
+        toast.success("Амжилттай нэвтэрлээ!");
+        navigate("/");
+      } else {
+        toast.error(result.resultMessage || "Нэвтрэхэд алдаа гарлаа");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Сервертэй холбогдож чадсангүй");
     }
   };
 
@@ -72,9 +82,7 @@ export default function Login() {
           </div>
 
           <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="password">Нууц үг</Label>
-            </div>
+            <Label htmlFor="password">Нууц үг</Label>
             <div className="relative">
               <Lock className="absolute left-3 top-3 h-4 w-4 text-purple-500" />
               <Input
@@ -89,7 +97,10 @@ export default function Login() {
             </div>
           </div>
 
-          <Button type="submit" className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600">
+          <Button
+            type="submit"
+            className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+          >
             <LogIn className="mr-2 h-4 w-4" />
             Нэвтрэх
           </Button>
@@ -98,7 +109,10 @@ export default function Login() {
         <div className="mt-6 text-center">
           <p className="text-purple-700">
             Аккаунт байхгүй юу?{" "}
-            <Link to="/signup" className="font-medium text-purple-600 hover:underline">
+            <Link
+              to="/signup"
+              className="font-medium text-purple-600 hover:underline"
+            >
               Бүртгүүлэх
             </Link>
           </p>

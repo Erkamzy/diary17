@@ -13,6 +13,8 @@ interface ImagePreview {
   file: File;
 }
 
+const API_URL = "http://127.0.0.1:8000/api/";
+
 export function MemoryForm() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -30,7 +32,7 @@ export function MemoryForm() {
       reader.onloadend = () => {
         setImagePreview({
           url: reader.result as string,
-          file
+          file,
         });
       };
       reader.readAsDataURL(file);
@@ -44,42 +46,58 @@ export function MemoryForm() {
     }
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    
+
     if (!title || !description) {
       toast.error("Бүх шаардлагатай талбаруудыг бөглөнө үү");
       return;
     }
 
-    // Шинэ дурсамжийн объект үүсгэх
-    const newMemory = {
-      id: Date.now().toString(),
-      userId: user?.id || "unknown", // Дурсамжийг хэрэглэгчтэй холбох
+    const userId = user?.id || "unknown";
+console.log("Current user:", user);
+
+    // Таны backend-д яг юу шаардлагатай вэ гэдгийг сайн шалгаарай.
+    // Доор зурагны URL-г шууд Data URL-аар илгээж байна. Хэрэв backend зураг upload хийдэггүй бол энэ тохирохгүй байж магадгүй.
+    const payload = {
+      action: "add_memory",
       title,
       description,
       location,
-      date,
-      image: imagePreview?.url || null,
-      likes: 0,
-      comments: []
+      memory_date: date,
+      image_url: imagePreview?.url || "",
+      user_id: userId,
     };
 
-    // Оршин буй дурсамжуудыг авах эсвэл шинэчлэх
-    const existingMemories = JSON.parse(localStorage.getItem("myMemories") || "[]");
-    
-    // Шинэ дурсамжийг массивд нэмж оруулах
-    const updatedMemories = [newMemory, ...existingMemories];
-    
-    // Дурсамжийг localStorage-д хадгалах
-    localStorage.setItem("myMemories", JSON.stringify(updatedMemories));
-    
-    toast.success("Дурсамж амжилттай үүсгэгдлээ!");
-    navigate("/my-memories");
+    try {
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.resultCode === 200) {
+        toast.success(data.resultMessage || "Дурсамж амжилттай үүсгэгдлээ!");
+        navigate("/my-memories");
+      } else {
+        toast.error(data.resultMessage || "Алдаа гарлаа");
+      }
+    } catch (error) {
+      toast.error("Сервертэй холбогдоход алдаа гарлаа");
+      console.error(error);
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 bg-white rounded-2xl shadow-md border border-purple-100 p-6 md:p-8">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-6 bg-white rounded-2xl shadow-md border border-purple-100 p-6 md:p-8"
+    >
+      {/* Гарчиг */}
       <div className="space-y-2">
         <Label htmlFor="title" className="text-purple-800">
           Гарчиг <span className="text-pink-500">*</span>
@@ -97,6 +115,7 @@ export function MemoryForm() {
         </div>
       </div>
 
+      {/* Тайлбар */}
       <div className="space-y-2">
         <Label htmlFor="description" className="text-purple-800">
           Тайлбар <span className="text-pink-500">*</span>
@@ -111,9 +130,12 @@ export function MemoryForm() {
         />
       </div>
 
+      {/* Байршил, Огноо */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="location" className="text-purple-800">Байршил</Label>
+          <Label htmlFor="location" className="text-purple-800">
+            Байршил
+          </Label>
           <Input
             id="location"
             value={location}
@@ -122,7 +144,9 @@ export function MemoryForm() {
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="date" className="text-purple-800">Огноо</Label>
+          <Label htmlFor="date" className="text-purple-800">
+            Огноо
+          </Label>
           <Input
             id="date"
             type="date"
@@ -132,19 +156,20 @@ export function MemoryForm() {
         </div>
       </div>
 
+      {/* Зураг нэмэх */}
       <div className="space-y-2">
         <Label className="text-purple-800">Зураг нэмэх</Label>
-        
+
         {imagePreview ? (
           <div className="relative">
-            <img 
-              src={imagePreview.url} 
-              alt="Preview" 
+            <img
+              src={imagePreview.url}
+              alt="Preview"
               className="w-full h-48 object-cover rounded-lg"
             />
-            <Button 
-              type="button" 
-              size="icon" 
+            <Button
+              type="button"
+              size="icon"
               variant="destructive"
               className="absolute top-2 right-2 rounded-full"
               onClick={removeImage}
@@ -158,11 +183,13 @@ export function MemoryForm() {
             className="border-2 border-dashed border-purple-200 rounded-lg p-6 text-center cursor-pointer hover:bg-purple-50 transition-colors"
           >
             <Camera className="mx-auto h-8 w-8 text-purple-400 mb-2" />
-            <p className="text-purple-600 mb-1">Зураг оруулна уу эсвэл дарж оруулна уу</p>
+            <p className="text-purple-600 mb-1">
+              Зураг оруулна уу эсвэл дарж оруулна уу
+            </p>
             <p className="text-xs text-purple-400">JPG, PNG, эсвэл GIF 5MB хүртэл</p>
           </div>
         )}
-        
+
         <input
           type="file"
           accept="image/*"
@@ -172,6 +199,7 @@ export function MemoryForm() {
         />
       </div>
 
+      {/* Илгээх товч */}
       <Button
         type="submit"
         className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"

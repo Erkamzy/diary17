@@ -12,23 +12,35 @@ export default function Signup() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleSignup = (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    const existingUsers = JSON.parse(localStorage.getItem("users") || "[]");
-    
-    if (existingUsers.some((user: any) => user.email === email)) {
-      toast.error("Энэ и-мэйл хаягтай хэрэглэгч бүртгэгдсэн байна");
-      return;
+
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          action: "add_user",
+          username: name,
+          email: email,
+          password: password,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (result.resultCode === 201) {
+        toast.success("Бүртгэл амжилттай!");
+        navigate("/my-memories");
+      } else {
+        toast.error(result.resultMessage || "Бүртгэл амжилтгүй боллоо");
+      }
+    } catch (error) {
+      toast.error("Сервертэй холбогдож чадсангүй");
+      console.error(error);
     }
-    
-    const newUser = { id: Date.now().toString(), name, email, password };
-    const updatedUsers = [...existingUsers, newUser];
-    localStorage.setItem("users", JSON.stringify(updatedUsers));
-    localStorage.setItem("currentUser", JSON.stringify(newUser));
-    
-    toast.success("Бүртгэл амжилттай үүслээ!");
-    navigate("/my-memories");
   };
 
   return (
@@ -40,7 +52,7 @@ export default function Signup() {
           </h1>
           <p className="text-purple-600 mt-2">Шинэ бүртгэл үүсгэх</p>
         </div>
-        
+
         <form onSubmit={handleSignup} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="name">Бүтэн нэр</Label>
@@ -57,7 +69,7 @@ export default function Signup() {
               />
             </div>
           </div>
-          
+
           <div className="space-y-2">
             <Label htmlFor="email">И-мэйл</Label>
             <div className="relative">
@@ -73,7 +85,7 @@ export default function Signup() {
               />
             </div>
           </div>
-          
+
           <div className="space-y-2">
             <Label htmlFor="password">Нууц үг</Label>
             <div className="relative">
@@ -89,13 +101,13 @@ export default function Signup() {
               />
             </div>
           </div>
-          
+
           <Button type="submit" className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600">
             <UserPlus className="mr-2 h-4 w-4" />
             Бүртгүүлэх
           </Button>
         </form>
-        
+
         <div className="mt-6 text-center">
           <p className="text-purple-700">
             Өмнө нь бүртгүүлсэн үү?{" "}
@@ -105,7 +117,7 @@ export default function Signup() {
           </p>
         </div>
       </div>
-      
+
       <div className="mt-4 text-center">
         <Link to="/" className="text-purple-600 hover:underline">
           Нүүр хуудас руу буцах
