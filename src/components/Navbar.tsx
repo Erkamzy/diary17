@@ -28,6 +28,9 @@ export function Navbar() {
           <Link to="/explore" className="text-purple-800 hover:text-purple-600 transition-colors">
             Хайх
           </Link>
+          <Link to="/About" className="text-purple-800 hover:text-purple-600 transition-colors">
+            Тухай
+          </Link>
           {isAuthenticated && (
             <Link to="/my-memories" className="text-purple-800 hover:text-purple-600 transition-colors">
               Миний Дурсамжууд

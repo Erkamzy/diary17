@@ -4,8 +4,8 @@ import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { Heart, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
+import { Item } from "@radix-ui/react-accordion";
 
-// Энэ мэдээлэл ихэвчлэн өгөгдлийн сангаас ирдэг
 const MEMORIES: MemoryProps[] = [
   {
     id: "1",
@@ -70,7 +70,7 @@ export default function Index() {
     id: "featured-1",
     title: "Хуримын өдөр",
     description: "Амьдралын минь хамгийн чцхал өдөр.",
-    imageUrl: " https://imgix.bustle.com/uploads/image/2023/3/23/26351fe6-c505-48f2-affb-fcf11abc22ed-d362-belle-disney.jpg?w=1200&h=630&fit=crop&crop=focalpoint&fm=jpg&fp-x=0.5147&fp-y=0.442",
+    imageUrl: "https://imgix.bustle.com/uploads/image/2023/3/23/26351fe6-c505-48f2-affb-fcf11abc22ed-d362-belle-disney.jpg?w=1200&h=630&fit=crop&crop=focalpoint&fm=jpg&fp-x=0.5147&fp-y=0.442",
     date: "2025 оны 3-р сарын 24",
     author: {
       name: "zykk",
@@ -80,7 +80,6 @@ export default function Index() {
     comments: 27
   };
 
-  // Backend API URL (жишээ)
   const API_URL = "http://localhost:8000/api/";
 
   useEffect(() => {
@@ -99,25 +98,25 @@ export default function Index() {
           throw new Error(`Server error: ${res.statusText}`);
         }
         const data = await res.json();
-
+        // console.log(data.imageUrl)
         if (data.resultCode === 200 && Array.isArray(data.data)) {
           setMemories(
             data.data.map((item: any) => ({
-              id: item.id.toString(),  // mid биш id ашиглах
+              id: item.id.toString(), 
               title: item.title,
-              description: item.description,  // content биш description
-              imageUrl: item.image_url || "", // backend-с ирэх зурагны URL
+              description: item.description,
+              imageUrl: item.imageUrl,
               date: new Date(item.created_at).toLocaleDateString("mn-MN", {
                 year: "numeric",
                 month: "long",
                 day: "numeric",
               }),
               author: {
-                name: "uid",
-                avatar: "https://via.placeholder.com/40",
+                name: item.author?.name || "Unknown",
+                avatar: item.author?.avatar || "https://via.placeholder.com/40",
               },
-              likes: 0,
-              comments: 0,
+              likes: item.likes,
+              comments: item.comments,
             }))
           );
 
@@ -223,7 +222,6 @@ export default function Index() {
               Бүгдийг харах →
             </Link>
           </div>
-
           {loading && <p>Түр хүлээнэ үү...</p>}
           {error && <p className="text-red-600">Алдаа гарлаа: {error}</p>}
 

@@ -5,18 +5,21 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/sonner";
 import { LogIn, Mail, Lock } from "lucide-react";
+import { useAuth } from "../contexts/AuthContext";  // adjust path if needed
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  // If already logged in, redirect immediately
   useEffect(() => {
-    const currentUser = localStorage.getItem("currentUser");
-    if (currentUser) {
-      navigate("/");
+    if (isAuthenticated) {
+      navigate("/my-memories");
     }
-  }, [navigate]);
+  }, [isAuthenticated, navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,32 +29,13 @@ export default function Login() {
       return;
     }
 
-    try {
-      const response = await fetch("http://127.0.0.1:8000/api/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          action: "login",
-          email,
-          password,
-        }),
-      });
+    const success = await login(email, password);
 
-      const result = await response.json();
-
-      if (result.resultCode === 200) {
-        const user = result.data[0];
-        localStorage.setItem("currentUser", JSON.stringify(user));
-        toast.success("Амжилттай нэвтэрлээ!");
-        navigate("/");
-      } else {
-        toast.error(result.resultMessage || "Нэвтрэхэд алдаа гарлаа");
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error("Сервертэй холбогдож чадсангүй");
+    if (success) {
+      toast.success("Амжилттай нэвтэрлээ!");
+      navigate("/my-memories");
+    } else {
+      toast.error("Нэвтрэхэд алдаа гарлаа");
     }
   };
 

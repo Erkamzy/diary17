@@ -142,13 +142,16 @@ def sendResponse(action, resultCode, resultMessage, data):
 def connectDB():
     conn = psycopg2.connect(
 
-        # host="192.168.0.15",
-        # host="59.153.86.254",
+        # host = "localhost",
+        # dbname="memory",
+        # user="postgres",
+        # password="1000",
+        # port=5432
+
         host = "localhost",
         dbname="memory",
         user="postgres",
-        password="1000",
-        # password="paasissw",
+        password="1717",
         port=5432
     )
     return conn

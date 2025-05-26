@@ -8,27 +8,44 @@ import { useAuth } from "@/contexts/AuthContext";
 
 export default function MyMemories() {
   const [memories, setMemories] = useState<MemoryProps[]>([]);
-  const { user } = useAuth(); // `user`-ийг context-с авах
+  const { user } = useAuth();
 
   useEffect(() => {
     if (!user) {
       console.log("User is not logged in");
       return;
     }
-  
-    const savedMemories = localStorage.getItem('myMemories');
-    if (savedMemories) {
-      const parsedMemories = JSON.parse(savedMemories);
-      const userMemories = parsedMemories.filter((memory: MemoryProps) => memory.userId === user.id);
-      setMemories(userMemories);
+
+    async function fetchMyMemories() {
+      try {
+        const response = await fetch("http://localhost:8000/api/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ action: "get_my_memory", user_id: user.id }),
+        });
+
+        const data = await response.json();
+        console.log("Response data from server:", data);
+
+        if (response.ok && data.resultCode === 200) {
+          setMemories(data.data);
+        } else {
+          console.error("Server error:", data.resultMessage || "No message provided");
+        }
+      } catch (error) {
+        console.error("Fetch error:", error);
+      }
     }
+
+    fetchMyMemories();
   }, [user]);
-  
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 to-pink-50">
       <Navbar />
-      
+
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-5xl mx-auto">
           <div className="flex justify-between items-center mb-8">
@@ -40,7 +57,7 @@ export default function MyMemories() {
               </Button>
             </Link>
           </div>
-
+          {/* console.log(memories) */}
           {memories.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {memories.map((memory) => (

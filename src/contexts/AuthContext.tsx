@@ -1,4 +1,3 @@
-
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
 interface User {
@@ -22,39 +21,51 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    // Check if user is logged in on mount
+    // Load currentUser from localStorage on mount
     const storedUser = localStorage.getItem("currentUser");
     if (storedUser) {
       const userData = JSON.parse(storedUser);
       setUser({
         id: userData.id,
         name: userData.name,
-        email: userData.email
+        email: userData.email,
       });
       setIsAuthenticated(true);
     }
   }, []);
 
+  // Login calls your backend API
   const login = async (email: string, password: string): Promise<boolean> => {
-    // Get registered users from localStorage
-    const users = JSON.parse(localStorage.getItem("users") || "[]");
-    
-    // Check if user exists
-    const foundUser = users.find((u: any) => u.email === email && u.password === password);
-    
-    if (foundUser) {
-      // Store logged in user in localStorage (excluding password)
-      const userData = {
-        id: foundUser.id,
-        name: foundUser.name,
-        email: foundUser.email
-      };
-      setUser(userData);
-      localStorage.setItem("currentUser", JSON.stringify(foundUser));
-      setIsAuthenticated(true);
-      return true;
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "login", email, password }),
+      });
+
+      const result = await response.json();
+
+      if (result.resultCode === 200) {
+        const userFromApi = result.data[0];
+
+        // Save user data in state and localStorage (exclude password)
+        const userData = {
+          id: userFromApi.id,
+          name: userFromApi.name,
+          email: userFromApi.email,
+        };
+
+        setUser(userData);
+        setIsAuthenticated(true);
+        localStorage.setItem("currentUser", JSON.stringify(userData));
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      return false;
     }
-    return false;
   };
 
   const logout = () => {
@@ -64,32 +75,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signup = async (name: string, email: string, password: string): Promise<boolean> => {
-    // Get existing users or initialize empty array
-    const existingUsers = JSON.parse(localStorage.getItem("users") || "[]");
-    
-    // Check if user already exists
-    if (existingUsers.some((user: any) => user.email === email)) {
-      return false;
-    }
-    
-    // Create new user
-    const newUser = { id: Date.now().toString(), name, email, password };
-    
-    // Add to users array
-    const updatedUsers = [...existingUsers, newUser];
-    localStorage.setItem("users", JSON.stringify(updatedUsers));
-    
-    // Set as current user (excluding password)
-    const userData = {
-      id: newUser.id,
-      name: newUser.name,
-      email: newUser.email
-    };
-    setUser(userData);
-    localStorage.setItem("currentUser", JSON.stringify(newUser));
-    setIsAuthenticated(true);
-    
-    return true;
+    // You can implement signup logic here similarly, calling your backend API if available
+    // For now, just return false to mark unimplemented
+    return false;
   };
 
   return (
