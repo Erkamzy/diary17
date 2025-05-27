@@ -55,33 +55,29 @@ export function MemoryForm() {
     }
 
     const userId = user?.id || "unknown";
-console.log("Current user:", user);
 
-    // Таны backend-д яг юу шаардлагатай вэ гэдгийг сайн шалгаарай.
-    // Доор зурагны URL-г шууд Data URL-аар илгээж байна. Хэрэв backend зураг upload хийдэггүй бол энэ тохирохгүй байж магадгүй.
-    const payload = {
-      action: "add_memory",
-      title,
-      description,
-      location,
-      memory_date: date,
-      image_url: imagePreview?.url || "",
-      user_id: userId,
-    };
+    const formData = new FormData();
+    formData.append("action", "add_memory");
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("location", location);
+    formData.append("memory_date", date);
+    formData.append("user_id", userId);
+
+    if (imagePreview?.file) {
+      formData.append("image", imagePreview.file);
+    }
 
     try {
       const response = await fetch(API_URL, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
+        body: formData,
       });
 
       const data = await response.json();
 
       if (response.ok && data.resultCode === 200) {
-        toast.success(data.resultMessage || "Дурсамж амжилттай үүсгэгдлээ!");
+        toast.success("Дурсамж амжилттай үүсгэгдлээ!");
         navigate("/my-memories");
       } else {
         toast.error(data.resultMessage || "Алдаа гарлаа");
@@ -91,7 +87,7 @@ console.log("Current user:", user);
       console.error(error);
     }
   };
-
+  
   return (
     <form
       onSubmit={handleSubmit}

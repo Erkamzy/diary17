@@ -1,9 +1,11 @@
+from django.conf import settings
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-import json
+import json, os
 from datetime import datetime
-from backendd.settings import sendResponse, connectDB, disconnectDB
+from backendd.settings import *
 from django.contrib.auth.hashers import make_password, check_password
+from django.utils import timezone
 
 @csrf_exempt
 def dt_time(request):
@@ -14,25 +16,40 @@ def dt_time(request):
 
 @csrf_exempt
 def add_memory(request):
-    jsons = json.loads(request.body)
-    action = jsons.get('action', 'add_memory')
+    action = request.POST.get('action', 'add_memory')
 
     try:
-        title = jsons['title']
-        description = jsons['description']
-        image_url = jsons.get('image_url', '')
-        memory_date = jsons.get('memory_date')
-        user_id = jsons['user_id']
-        created_at = datetime.now()
+        title = request.POST['title']
+        description = request.POST['description']
+        user_id = request.POST['user_id']
+        memory_date = request.POST.get('memory_date', None)
+        image_file = request.FILES.get('image', None)
+        created_at = timezone.now()
     except KeyError:
         return sendResponse(action, 400, "title, description, user_id шаардлагатай", [])
 
+    # 📅 Огнооны шалгалт
     if memory_date:
         try:
             memory_date = datetime.strptime(memory_date, "%Y-%m-%d")
         except ValueError:
             return sendResponse(action, 400, "memory_date буруу форматтай байна. Жишээ: 2025-05-22", [])
 
+    # 🖼 Зураг хадгалах
+    image_url = ""
+    if image_file:
+        filename = f"{datetime.now().strftime('%Y%m%d%H%M%S')}_{image_file.name}"
+        upload_path = os.path.join(settings.MEDIA_ROOT, 'uploads')
+        os.makedirs(upload_path, exist_ok=True)
+
+        file_path = os.path.join(upload_path, filename)
+        with open(file_path, 'wb+') as destination:
+            for chunk in image_file.chunks():
+                destination.write(chunk)
+
+        image_url = f"media/uploads/{filename}"
+
+    # 💾 Өгөгдлийн санд хадгалах
     try:
         myConn = connectDB()
         cursor = myConn.cursor()
@@ -48,7 +65,11 @@ def add_memory(request):
     except Exception as e:
         return sendResponse(action, 500, str(e), [])
     finally:
-        disconnectDB(myConn)
+        if 'cursor' in locals():
+            cursor.close()
+        if 'myConn' in locals():
+            disconnectDB(myConn)
+
 
 @csrf_exempt
 def get_memory(request):
@@ -286,30 +307,48 @@ def login_user(request):
 @csrf_exempt
 def memoryService(request):
     if request.method == "POST":
-        try:
-            jsons = json.loads(request.body)
-            action = jsons.get('action')
-        except:
-            return JsonResponse(sendResponse("invalid", 400, "Invalid JSON", []))
+        content_type = request.content_type  
+        if content_type == 'application/json':
+            try:
+                jsons = json.loads(request.body)
+                action = jsons.get('action')
+            except:
+                return JsonResponse(sendResponse("invalid", 400, "Invalid JSON", []))
 
-        if action == 'add_memory':
-            return JsonResponse(add_memory(request))
-        elif action == 'get_memory':
-            return JsonResponse(get_memory(request))
-        elif action == 'get_my_memory':
-            return JsonResponse(get_my_memory(request))
-        elif action == 'add_user':
-            return JsonResponse(add_user(request))
-        elif action == 'login':
-            return JsonResponse(login_user(request))
-        elif action == 'time':
-            return JsonResponse(dt_time(request))
-        elif action == 'edit_memory':
-            return JsonResponse(edit_memory(request))
-        elif action == 'delete_memory':
-            return JsonResponse(delete_memory(request))
-        else:
-            return JsonResponse(sendResponse(action, 406, "Action олдсонгүй", []))
+            if action == 'get_memory':
+                return JsonResponse(get_memory(request))
+            elif action == 'get_my_memory':
+                return JsonResponse(get_my_memory(request))
+            elif action == 'add_user':
+                return JsonResponse(add_user(request))
+            elif action == 'login':
+                return JsonResponse(login_user(request))
+            elif action == 'time':
+                return JsonResponse(dt_time(request))
+            elif action == 'edit_memory':
+                return JsonResponse(edit_memory(request))
+            elif action == 'delete_memory':
+                return JsonResponse(delete_memory(request))
+            else:
+                return JsonResponse(sendResponse(action, 406, "Action олдсонгүй", []))
+        elif content_type.startswith('multipart/form-data'): # form-data
+            try: 
+                action = request.POST.get('action')
+                print(action)
+            except:
+                action = "no action"
+                respData = []
+                resp = sendResponse(action, 4001, "no action key", respData)
+                return (JsonResponse(resp))
+            
+            if(action == 'add_memory'): #
+                result = add_memory(request)
+                return (JsonResponse(result))
+            else:
+                action = action
+                respData = []
+                resp = sendResponse(action, 406, "no registered action", respData)
+                return (JsonResponse(resp))
     elif request.method == "GET":
         return JsonResponse({"method": "GET"})
     else:

@@ -93,20 +93,20 @@ export default function Index() {
       },
       body: JSON.stringify({ action: "get_memory" }),
     })
-      .then(async (res) => {
-        if (!res.ok) {
-          throw new Error(`Server error: ${res.statusText}`);
-        }
-        const data = await res.json();
-        // console.log(data.imageUrl)
-        if (data.resultCode === 200 && Array.isArray(data.data)) {
+    .then(async (res) => {
+      if (!res.ok) {
+        throw new Error(`Server error: ${res.statusText}`);
+      }
+      const data = await res.json();
+      if (data.resultCode === 200 && Array.isArray(data.data)) {
+          console.log(data)
           setMemories(
             data.data.map((item: any) => ({
               id: item.id.toString(), 
               title: item.title,
               description: item.description,
               imageUrl: item.imageUrl,
-              date: new Date(item.created_at).toLocaleDateString("mn-MN", {
+              date: new Date(item.date).toLocaleDateString("mn-MN", {
                 year: "numeric",
                 month: "long",
                 day: "numeric",
@@ -123,7 +123,7 @@ export default function Index() {
         } else {
           throw new Error(data.resultMessage || "Unknown error");
         }
-
+        
       })
       .catch((err) => {
         setError(err.message);
@@ -131,8 +131,8 @@ export default function Index() {
       .finally(() => {
         setLoading(false);
       });
-  }, []);
-
+    }, []);
+    
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 to-pink-50">
       <Navbar />
@@ -224,7 +224,6 @@ export default function Index() {
           </div>
           {loading && <p>Түр хүлээнэ үү...</p>}
           {error && <p className="text-red-600">Алдаа гарлаа: {error}</p>}
-
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {!loading && !error && memories.map((memory) => (
               <MemoryCard key={memory.id} memory={memory} />

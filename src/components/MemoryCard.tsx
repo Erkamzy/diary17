@@ -34,12 +34,12 @@ export function MemoryCard({ memory }: { memory: MemoryProps }) {
     //   body: JSON.stringify({ action: "toggle_like", memory_id: memory.id }),
     // }).catch((err) => console.error("Failed to update like:", err));
   };
-  console.log(memory.imageUrl)
+  console.log(memory)
   return (
     <div className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-lg transition-shadow border border-purple-100">
       <div className="relative aspect-video overflow-hidden">
         <img
-          src={memory.imageUrl}
+          src={`http://127.0.0.1:8000/${memory.imageUrl}`}
           alt={memory.title}
           className="w-full h-full object-cover transition-transform hover:scale-105 duration-500"
         />
